@@ -1,3 +1,4 @@
+from itertools import permutations 
 import logging
 
 class Graph(object):
@@ -20,6 +21,21 @@ class Graph(object):
                     temp.append(0)
             MatrizDeAdjacencia.append(temp)
         return MatrizDeAdjacencia
+
+    def IsIsomorphTo(self,grafo):
+        contador = 0
+        if(len(self.nodos)==len(grafo.nodos) and len(self.lados) == len(grafo.lados)):
+            for i in self.AdjacencyMatrix():
+                permutaciones = []
+                for p in permutations(i):
+                    permutaciones.append(p)
+                if(not(tuple(grafo.AdjacencyMatrix()[contador]) in permutaciones)):
+                    return False
+                else:
+                    contador = contador + 1
+            return True
+        else:
+            return False
     
     
     
