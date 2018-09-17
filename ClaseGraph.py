@@ -84,7 +84,7 @@ class Graph(object):
                             #En el caso de que vertice no sea alcanzable desde u
                             d[vertice] = -1
                             
-            #quitamos el primer elemento de r y se lo ponemos a s
+            #quitamos el primer elemento de r y se lo ponemos a s               
             r.remove(nodo)
             s = s.union({nodo})
 
@@ -138,4 +138,25 @@ class Graph(object):
             if e < eMin:
                 eMin = e
         return eMin        
+
+    def conectado(self):
+        aux = self.nodos[0]
+        for nodoActual in self.nodos:
+            if(self.distancia(aux,nodoActual) == -1):
+                return False
+        return True
+    def esArbol(self):
+        if(self.conectado() and len(self.lados) == len(self.nodos) - 1):
+            return True
+        else:
+            return False
+    def Euleriano(self):
+        aux = self.AdjacencyMatrix()
+        for i in aux:
+            suma = 0
+            for j in i:
+                suma = suma + j
+            if(suma % 2 == 1):
+                return False
+        return True
         
