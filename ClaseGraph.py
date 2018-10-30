@@ -159,4 +159,14 @@ class Graph(object):
             if(suma % 2 == 1):
                 return False
         return True
+
+    def vecinos(self):
+        d = {}
+	for u in self.nodos:
+	    x = []
+	    for v in self.nodos:
+	        if ((u,v) in self.lados or (v,u) in self.lados):
+		    x.append(v)
+            d[u] = x
+	return d
         
