@@ -66,15 +66,24 @@ class weightedGraph(object):
 
         return G
 	
-    def vecinos(self):
-        d = {}
-	for u in self.nodos:
-	    x = []
-	    for v in self.nodos:
-	        if ((u,v) in self.lados):
-		    x.append((u,v))
-		elif((v,u) in self.lados):
-		    x.append((v,u))
-	    print x
-            d[u] = x
-	return d
+
+    def algoritmoHungaro(self):
+	#Creamos la biparticion x,y
+	lados = []
+	for l in self.lados:
+	    lados.append(l[0])
+	
+	
+	n = self.nodos[0]
+	x = [n]
+	y = []
+	for v in self.nodos:
+	    if (((n,v) in lados or (v,n) in lados) and v not in x):
+	        y.append(v)
+	    else:
+		x.append(v)
+	x.pop(0)
+	
+	
+	
+	
