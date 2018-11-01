@@ -214,8 +214,8 @@ class weightedGraph(object):
                     if l[0][0] not in nuevosNodos:
                         nuevosNodos.append(l[0][0])
                     elif l[0][1] not in nuevosNodos:
-                        nuevosNodos.append(l[[0]1])
+                        nuevosNodos.append(l[0][1])
 
                 G = weightedGraph(nuevosNodos,nuevosLados)
 
-            print "se ha encontrado un emparejamiento perfecto (y un cubrimiento minimo de vertices)
+            print "se ha encontrado un emparejamiento perfecto (y un cubrimiento minimo de vertices)"

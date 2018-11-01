@@ -171,22 +171,22 @@ class Graph(object):
 ##	return d
 
     def IsBipartite(self):
-        dic = {}
+        dicc = {}
         for k in self.lados:
             if(k[0] not in dicc):
                 dicc[k[0]] = k[1]
             elif(k[0] in dicc):
                 dicc[k[0]].append(k[1])
-        visitidos = set()
+        visitados = set()
         cola = [self.nodos[0]]
         while(cola):
             vertex = cola.pop(0)
-            for w in dic[vertex]:
+            for w in dicc[vertex]:
                 if(w not in visitados):
                     visitados.add(w)
                     cola.append(w)
                 else:
-                    for z in permutations(dic[w]):
+                    for z in permutations(dicc[w]):
                         if(z in self.lados):
                             return False
         return True
