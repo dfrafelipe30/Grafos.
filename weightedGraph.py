@@ -2,6 +2,10 @@ class weightedGraph(object):
     def __init__(self,nodos,lados):
         self.nodos = nodos
         self.lados = lados
+	sl = []
+	for l in self.lados:
+	    sl.append(l[0])
+	self.SoloLados = sl
 
     def MatrizDePesos(self):
         dicc = {}
@@ -60,12 +64,11 @@ class weightedGraph(object):
 
 
         listaLados = []
-        for k in nuevosLados.keys():
+        for k in nuevosLados.keys():	
             listaLados.append((k,nuevosLados[k]))
         G = weightedGraph(nodosNuevos,listaLados)
 
         return G
-	
 
     def algoritmoHungaro(self):
 	#Creamos la biparticion x,y
@@ -83,7 +86,99 @@ class weightedGraph(object):
 	    else:
 		x.append(v)
 	x.pop(0)
+
+	print "Los conjuntos X y Y son:"
+	print "x: ",x
+	print "y: ",y
+
+
+	#############################
 	
 	
+	#DIFERENCIA ENTRE CONJUNTOS a-b
+	a = set(x)
+	print a
+	b = set(['a'])
+	print a-b
+	#c =set
+        """for i in b:
+	    if(i in a):
+	        a.remove(i)
+	print a
+	"""
+	return 0
+	
+		
+	#############################
+
+	#Construimos la matriz de pesos
+
+	mat = []
+	dicc = {}
+        for v in self.lados:
+            dicc[v[0]] = v[1]
+
+	for xi in x:
+	    reg = []
+	    for yi in y:
+                if((xi,yi) in lados):
+		   reg.append(dicc[(xi,yi)])
+		elif ((yi,xi) in lados):
+		    reg.append(dicc[(yi,xi)])
+	    mat.append(reg)
+
+	#Pesos de los nodos:
+	eX = []
+	eY = []
+	for r in mat:
+	    eX.append(max(r))
+	    eY.append(0)
+	print "x:"
+	print x
+	print "etiquetas de x: ",eX	
+
+	print "y:"
+	print y
+	print "etiquetas de y: ",eY
+	return	
+
+
+
+	#vc: cubrimiento minimo de vertices
+	m,vc = self.caminoAumentador()
+
+	#Verificando si emparejamiento es perfecto
+	verif = []
+	for l in m:
+	    verif.append(l[0])
+	    verif.append(l[1])
+	if (set(vc) == set(self.nodos)):
+	    return m
+	else:
+	    #q: cubrimiento minimo
+	    q = []
+	    # Creando lista de lados iniciales
+	    ladosIni = []
+	    for maximo in eX:
+		for l in self.soloLados:
+		    if((l,maximo) in self.lados):
+		        ladosIni.append((l,maximo))
+	
+	    #Creando lista de nodos iniciales
+	    nodosIni = []
+	    for l in ladosIni:
+		for v in l[0]:
+		    nodos.append(v)
+	    nodosIni = list(set(nodosIni))
+	    
+	    #Creacion de Grafo inicial.
+	    G = weightedGraph(nodosIni,ladosIni)
+	    #Paso iterativo dificil -------- Crear el nuevo G al ginal
+	    while(len(q) < len(x)):
+		m,vc = G.caminoAumentador()
+		q = set(vc)
+		r = set(x) & q
+		t = set(y) & q
 	
 	
+
