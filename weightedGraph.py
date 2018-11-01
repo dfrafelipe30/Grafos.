@@ -155,8 +155,8 @@ class weightedGraph(object):
 	if (set(vc) == set(self.nodos)):
 	    return m
 	else:
-	    #q: cubrimiento minimo
-	    q = []
+	    #Q: cubrimiento minimo
+	    Q = []
 	    # Creando lista de lados iniciales
 	    ladosIni = []
 	    for maximo in eX:
@@ -176,9 +176,14 @@ class weightedGraph(object):
 	    #Paso iterativo dificil -------- Crear el nuevo G al ginal
 	    while(len(q) < len(x)):
 		m,vc = G.caminoAumentador()
-		q = set(vc)
-		r = set(x) & q
-		t = set(y) & q
+		Q = set(vc)
+		R = set(x) & Q
+		T = set(y) & Q
+		
+		XnoR = set(x)-R
+		YnoT = set(y)-T
+		#EXCESO
+		
 	
 	
 
