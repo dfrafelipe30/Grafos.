@@ -96,17 +96,6 @@ class weightedGraph(object):
 	
 	
 	#DIFERENCIA ENTRE CONJUNTOS a-b
-	a = set(x)
-	print a
-	b = set(['a'])
-	print a-b
-	#c =set
-        """for i in b:
-	    if(i in a):
-	        a.remove(i)
-	print a
-	"""
-	return 0
 	
 		
 	#############################
@@ -126,28 +115,28 @@ class weightedGraph(object):
 		elif ((yi,xi) in lados):
 		    reg.append(dicc[(yi,xi)])
 	    mat.append(reg)
-
+        print "matriz: ",mat
 	#Pesos de los nodos:
 	eX = []
 	eY = []
 	for r in mat:
 	    eX.append(max(r))
 	    eY.append(0)
-	print "x:"
-	print x
-	print "etiquetas de x: ",eX	
 
-	print "y:"
-	print y
-	print "etiquetas de y: ",eY
-	return	
-
-
+	#diccionario de pesos en nodos:
+	dicV = {}
+	for i in range(len(x)):
+            dicV[x[i]] = eX[i]
+        for i in range(len(y)):
+            dicV[y[i]] = eY[i]
+        #print dicV
+	#return
+	
 
 	#vc: cubrimiento minimo de vertices
 	m,vc = self.caminoAumentador()
 
-	#Verificando si emparejamiento es perfecto
+	#Verificando si emparejamiento inicial es perfecto
 	verif = []
 	for l in m:
 	    verif.append(l[0])
@@ -160,7 +149,7 @@ class weightedGraph(object):
 	    # Creando lista de lados iniciales
 	    ladosIni = []
 	    for maximo in eX:
-		for l in self.soloLados:
+		for l in self.SoloLados:
 		    if((l,maximo) in self.lados):
 		        ladosIni.append((l,maximo))
 	
@@ -173,17 +162,60 @@ class weightedGraph(object):
 	    
 	    #Creacion de Grafo inicial.
 	    G = weightedGraph(nodosIni,ladosIni)
-	    #Paso iterativo dificil -------- Crear el nuevo G al ginal
-	    while(len(q) < len(x)):
+	    #Paso iterativo dificil -------- Crear el nuevo G al final
+	    while(len(Q) < len(x)):
+                print "-----------------------------"
+                print "len(Q): ",len(Q)
 		m,vc = G.caminoAumentador()
+                #Verificando si emparejamiento inicial es perfecto
+                verif = []
+                for l in m:
+                    verif.append(l[0])
+                    verif.append(l[1])
+                if (set(vc) == set(self.nodos)):
+                    return m
 		Q = set(vc)
 		R = set(x) & Q
 		T = set(y) & Q
 		
 		XnoR = set(x)-R
 		YnoT = set(y)-T
-		#EXCESO
 		
-	
-	
+		#Marcando las filas y columnas por ignorar para EXCESOS
+		excesos = []
+		for i in range(len(x)):
+                    if x[i] not in Q:
+                        for j in range(len(y)):
+                            if y[j] not in Q:
+                                E = dicV[x[i]] + dicV[y[j]] - mat[i][j]
+                                excesos.append(E)
+                E = min(excesos)
 
+                #Disminuimos a E a todos los v en X-R y sumamos E a los y en T
+                for v in dicV.keys():
+                    if v in XnoR:
+                        dicV[v] = dicV[v] - E
+                    elif v in T:
+                        dicV[v] = dicV[v] + E
+                #Finalmente creamos el nuevo G a partir de los nuevos pesos de los vertices
+                nuevosNodos = []
+                nuevosLados = [] #parejas lado-peso
+
+                #Nuevos lados
+                for i in range(len(x)):
+                    for j in range(len(y)):
+                        if ((dicV[x[i]] + dicV[y[j]] - mat[i][j]) == 0):
+                            if ((x[i],y[j]),mat[i][j]) in self.lados:
+                                nuevosLados.append(((x[i],y[j]),mat[i][j]))
+                            elif ((y[j],x[i]),mat[i][j]) in self.lados:
+                                nuevosLados.append(((y[j],x[i]),mat[i][j]))
+                # Nuevos nodos:
+                for l in nuevosLados:
+                    if l[0][0] not in nuevosNodos:
+                        nuevosNodos.append(l[0][0])
+                    elif l[0][1] not in nuevosNodos:
+                        nuevosNodos.append(l[[0]1])
+
+                G = weightedGraph(nuevosNodos,nuevosLados)
+
+            print "se ha encontrado un emparejamiento perfecto (y un cubrimiento minimo de vertices)

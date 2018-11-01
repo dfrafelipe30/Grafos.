@@ -160,13 +160,98 @@ class Graph(object):
                 return False
         return True
 
-    def vecinos(self):
-        d = {}
-	for u in self.nodos:
-	    x = []
-	    for v in self.nodos:
-	        if ((u,v) in self.lados or (v,u) in self.lados):
-		    x.append(v)
-            d[u] = x
-	return d
-        
+##    def vecinos(self):
+##        d = {}
+##	for u in self.nodos:
+##	    x = []
+##	    for v in self.nodos:
+##	        if ((u,v) in self.lados or (v,u) in self.lados):
+##		    x.append(v)
+##            d[u] = x
+##	return d
+
+    def IsBipartite(self):
+        dic = {}
+        for k in self.lados:
+            if(k[0] not in dicc):
+                dicc[k[0]] = k[1]
+            elif(k[0] in dicc):
+                dicc[k[0]].append(k[1])
+        visitidos = set()
+        cola = [self.nodos[0]]
+        while(cola):
+            vertex = cola.pop(0)
+            for w in dic[vertex]:
+                if(w not in visitados):
+                    visitados.add(w)
+                    cola.append(w)
+                else:
+                    for z in permutations(dic[w]):
+                        if(z in self.lados):
+                            return False
+        return True
+    def Separacion(self):
+        X = []
+        Y = []
+        for i in self.v:
+            if(i in X and i not in Y):
+                Y = Y + self.neighbors(i)
+            elif(i not in X and i in Y):
+                X = X + self.neighbors(i)
+            else:
+                X.append(i)
+                Y = Y + self.neighbors(i)
+        return (X,Y)
+    
+    def isEmparejado(self,emparejamiento,nodo):
+        for i in emparejamiento:
+            if( nodo in i):
+                return True
+        return False
+    
+    def Vecinos (self, u): #Retorna una lista de los vertices vecinos a 'u'
+        neigh = []
+        for i in self.e:
+            if u in i:
+                if i[0] == u: #Si u estÃ¡ en la primera posiciÃ³n de la tupla...
+                    neigh.append(i[1])
+                elif i[1] == u: #Si u estÃ¡ en la segunda posiciÃ³n de la tupla...
+                    neigh.append(i[0])
+        return neigh
+
+    def aumentador(self,S,Empar,NNx):# S todos los elementos de X.
+        T = set()
+        emparejamiento = Empar
+        for i in S:
+            vecinos = self.Vecinos(i)
+            for j in vecinos:
+                if(not(self.isEmparejado(emparejamiento,j))):
+                    for t in emparejamiento:
+                        if(i in t):
+                            emparejamiento.pop(emparejamiento.index(t))
+                    emparejamiento.append((i,j))
+                    S.remove(i)
+                    return self.aumentador(S,emparejamiento,NNx)
+                else:
+                    for k in emparejamiento:
+                        if(j == k[0] and k[1] not in S):
+                            S.append(k[1])
+                            
+                        elif(j == k[1] and k[0] not in S):
+                            S.append(k[0])
+                            
+                    T.add(j)
+        cubrimiento = T|(set(NNx) - set(S))
+        return (emparejamiento,cubrimiento)
+    def CaminoAumentador(self):
+        if(self.IsBipartite()):    
+            X,Y = self.Separacion()
+            NNx = list(set(X))
+            NNx.sort()
+            Nx = list(set(X))
+            Nx.sort()
+            Nx.pop(0)
+            E,C = self.aumentador(Nx,[self.e[0]],NNx)
+            return (E,C)
+        else:
+            print "ERROR"
